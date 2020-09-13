@@ -5,5 +5,5 @@
  - Using Finite Difference Method to numerically solve  u"(x) + sin(x) = 0: 
  https://github.com/jai2510/Topology-Optimization-for-Metamaterials-iSURP/blob/master/Finite%20Difference%20Method%20on%20u''(x)%20%2B%20sin(x)%20%3D%200.ipynb
  
- - a simple C++ code to find the square root of any number.
+ - A simple C++ code to find the square root of any number.
  https://github.com/jai2510/Topology-Optimization-for-Metamaterials-iSURP/blob/master/sqrt.cpp
