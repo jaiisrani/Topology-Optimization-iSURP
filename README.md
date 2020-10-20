@@ -16,3 +16,6 @@ https://github.com/jai2510/Topology-Optimization-for-Metamaterials-iSURP/blob/ma
 
 - A python code demonstrating Steepest Gradient Descent to find the local/global minima/maxima of a continuous and differentiable function: \
 https://github.com/jai2510/Topology-Optimization-for-Metamaterials-iSURP/blob/master/Steepest%20Gradient%20Descent.ipynb
+
+- Demonstrating the Forward and Backward Euler Method for x'(t) = f(x): \
+https://github.com/jai2510/Topology-Optimization-for-Metamaterials-iSURP/blob/master/Forward%20and%20Backward%20Euler%20Approach.ipynb
