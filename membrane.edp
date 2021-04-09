@@ -1,0 +1,22 @@
+// shape optimization of a membrane - rectangular
+
+real Lx = 1.0;
+real Ly = 1.0;
+
+// load is applied at:
+real xc = 0.75*Lx;
+real yc = 0.5*Ly;
+// load(force) given by:
+real F = 5.0;
+//radius of applied load(disc):
+real r = 0.1;
+
+// Build mesh
+border a(t=0, Ly){x=0; y=Ly-t; label=1;};
+border b(t=0, Lx){x=t; y=0; label=2;};
+border c(t=0, Ly){x=Lx; y=t; label=3;};
+border d(t=0, Lx){x=Lx-t; y=Ly; label=4;};
+
+int nmesh = 25;  // can't use n_mesh name since FreeFEM foes not like underscores.
+mesh Th = buildmesh(a(nmesh) + b(nmesh) + c(nmesh) + d(nmesh));
+plot(Th);
