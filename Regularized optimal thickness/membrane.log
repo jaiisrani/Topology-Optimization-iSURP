@@ -1,0 +1,215 @@
+-- FreeFem++ v4.5 (mar. 11 févr. 2020 20:59:29 - git v4.5-2-g95135963)
+ Load: lg_fem lg_mesh lg_mesh3 eigenvalue
+    1 : // shape optimization of a membrane - rectangular
+    2 : // Governing equation:
+    3 : // div(h*grad(u ))+ f = 0 on domain D
+    4 : // u = 0 on boundary dD
+    5 : // Objective function J(h) = int_D fu dx
+    6 : // Adjoint equation:
+    7 : // -div(h grad(p)) - f = 0 on D
+    8 : // p = 0 on dD
+    9 :
+   10 : real Lx = 1.0;
+   11 : real Ly = 1.0;
+   12 :
+   13 : // load is applied at:
+   14 : real xc = 0.7*Lx;
+   15 : real yc = 0.5*Ly;
+   16 : // load(force) given by:
+   17 : real F = 5.0;
+   18 : //radius of applied load(disc):
+   19 : real r = 0.05;
+   20 :
+   21 : // Build mesh
+   22 : border a(t=0, Ly){x=0; y=Ly-t; label=1;};
+   23 : border b(t=0, Lx){x=t; y=0; label=2;};
+   24 : border c(t=0, Ly){x=Lx; y=t; label=3;};
+   25 : border d(t=0, Lx){x=Lx-t; y=Ly; label=4;};
+   26 :
+   27 : int nmesh = 50;  // can't use n_mesh name since FreeFEM foes not like underscores.
+   28 : mesh Th = buildmesh(a(nmesh) + b(nmesh) + c(nmesh) + d(nmesh));
+   29 : plot(Th);
+   30 : //////////////// RUN THE ABOVE CODE TO SEE MESH ////////////////
+   31 :
+   32 : // define physical variables
+   33 : /// first make finite-element space
+   34 : fespace Vh2d(Th, P1); // affine interpolation
+   35 :
+   36 : //// Dispacement u
+   37 : Vh2d u;
+   38 : Vh2d v; // test variables of weak form
+   39 :
+   40 : //// Adjoint variables
+   41 : Vh2d p;
+   42 : Vh2d q;
+   43 :
+   44 : //// Thickness h
+   45 : real h0 = 0.25; //constant thickness to be optimized
+   46 : Vh2d h = h0; // FreeFEM is designed to case h0 to Vh2d. Can we initialize h0 with Vh2d ?
+   47 : real dh;
+   48 : Vh2d hr; // regularized h
+   49 :
+   50 : // define loads: Gaussian distribution centered at (xc, yc)
+   51 : func f = F*exp(-((x-xc)^2 + (y-yc)^2)/(2.0*r*r));
+   52 :
+   53 : // Optimization loop- Gradient descent
+   54 : real eps = 0.01;
+   55 : real dt;
+   56 : int maxiter = 10000;
+   57 :
+   58 : //// Regularization for h
+   59 : real alpha = 0.01;
+   60 : problem regularization(hr, v) // can use same test function v
+   61 :     = int2d(Th)(
+   62 :         alpha^2*(dx(hr)*dx(v) + dy(hr)*dy(v)) + hr*v
+   63 :     )
+   64 :     - int2d(Th)(
+   65 :         h*v
+   66 :     )
+   67 : ;
+   68 :
+   69 : for (int iter=0; iter < maxiter; iter++){
+   70 :     //// Solve Primal problem
+   71 :     solve Membrane(u, v)
+   72 :         = int2d(Th)(
+   73 :             h*(dx(u)*dx(v) + dy(u)*dy(v))
+   74 :         )
+   75 :         -
+   76 :         int2d(Th)(
+   77 :             f*v
+   78 :         )
+   79 :         + on(1, u=0)
+   80 :         + on(2, u=0)
+   81 :         + on(3, u=0)
+   82 :         + on(4, u=0)
+   83 :     ;
+   84 :
+   85 :     //    plot(u, fill=true, value=false);
+   86 :     //    savemesh(Th, "membrane.msh"); // saving the mesh
+   87 :
+   88 :     //// Solve Adjoint problem
+   89 :     solve Adjoint(p, q)
+   90 :         = int2d(Th)(
+   91 :             h*(dx(p)*dx(q) + dy(p)*dy(q))
+   92 :         )
+   93 :         -
+   94 :         int2d(Th)(
+   95 :             (-f)*q
+   96 :         )
+   97 :         + on(1, p=0)
+   98 :         + on(2, p=0)
+   99 :         + on(3, p=0)
+  100 :         + on(4, p=0)
+  101 :     ;
+  102 :
+  103 :     // adjoint solution comes for free because p = - u , because it is like using -F instead of F
+  104 :
+  105 :     //// step forward - compute Gradient
+  106 :     Vh2d dJ = -(dx(u)*dx(u) + dy(u)*dy(u)); // since dJ = dx(u)*dx(p) + dy(u)*dy(p); // dJ is norm of grad
+  107 :
+  108 :     dh = max(h[].max, -h[].min);
+  109 :     dt = eps*dh;
+  110 :     h = h - dt*dJ;
+  111 :
+  112 :     //// Regularization
+  113 :     regularization;
+  114 :     h = hr;
+  115 :
+  116 :     plot(h, fill=1, wait=false, value=true); // to see the update for h in every loop // wait is false so it doeq)sn't pause at every loop; value is for colorbar
+  117 : }
+  118 :
+  119 : plot(h, fill=1, wait=true, value=true);
+  120 : // plot(u, fill=true, value=false); // to plot the force // not needed
+  121 :
+  122 :  sizestack + 1024 =4304  ( 3280 )
+ 
+  --  mesh:  Nb of Triangles =   5980, Nb of Vertices 3091
+  -- Solve :
+          min 4.88196e-66  max 0.108053
+  -- Solve :
+          min -0.108053  max -4.88196e-66
+  -- Solve :
+          min 0.25  max 0.250585
+  -- Solve :
+          min 4.88061e-66  max 0.107944
+  -- Solve :
+          min -0.107944  max -4.88061e-66
+  -- Solve :
+          min 0.25  max 0.251138
+  -- Solve :
+          min 4.87926e-66  max 0.107835
+  -- Solve :
+          min -0.107835  max -4.87926e-66
+  -- Solve :
+          min 0.25  max 0.251685
+  -- Solve :
+          min 4.87792e-66  max 0.107728
+  -- Solve :
+          min -0.107728  max -4.87792e-66
+  -- Solve :
+          min 0.25  max 0.252216
+  -- Solve :
+          min 4.87659e-66  max 0.10762
+  -- Solve :
+          min -0.10762  max -4.87659e-66
+  -- Solve :
+          min 0.250001  max 0.252733
+  -- Solve :
+          min 4.87526e-66  max 0.107514
+  -- Solve :
+          min -0.107514  max -4.87526e-66
+  -- Solve :
+          min 0.250001  max 0.253238
+  -- Solve :
+          min 4.87395e-66  max 0.107408
+  -- Solve :
+          min -0.107408  max -4.87395e-66
+  -- Solve :
+          min 0.250001  max 0.253732
+  -- Solve :
+          min 4.87265e-66  max 0.107303
+  -- Solve :
+          min -0.107303  max -4.87265e-66
+  -- Solve :
+          min 0.250001  max 0.254215
+  -- Solve :
+          min 4.87135e-66  max 0.107199
+  -- Solve :
+          min -0.107199  max -4.87135e-66
+  -- Solve :
+          min 0.250002  max 0.25469
+  -- Solve :
+          min 4.87006e-66  max 0.107095
+  -- Solve :
+          min -0.107095  max -4.87006e-66
+  -- Solve :
+          min 0.250002  max 0.255155
+  -- Solve :
+          min 4.86878e-66  max 0.106993
+  -- Solve :
+          min -0.106993  max -4.86878e-66
+  -- Solve :
+          min 0.250003  max 0.255612
+  -- Solve :
+          min 4.8675e-66  max 0.106891
+  -- Solve :
+          min -0.106891  max -4.8675e-66
+  -- Solve :
+          min 0.250003  max 0.256062
+  -- Solve :
+          min 4.86623e-66  max 0.106789
+  -- Solve :
+          min -0.106789  max -4.86623e-66
+  -- Solve :
+          min 0.250003  max 0.256505
+  -- Solve :
+          min 4.86497e-66  max 0.106689
+  -- Solve :
+          min -0.106689  max -4.86497e-66
+  -- Solve :
+          min 0.250004  max 0.256942
+  -- Solve :
+          min 4.86372e-66  max 0.106589
+  -- Solve :
+          min -0.106589  max -4.86372e-66
+ try getConsole C:\Users\Krish\Desktop\problems(jai)\regularized optimal thickness\membrane.edp
