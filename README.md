@@ -1,4 +1,4 @@
-# Topology Optimization for Metamaterials.
+# Topology Optimization
 ## September 2020 - present
  This repository contains all the programs I will use for my iSURP project on Topology Optimization for Metamaterials.
 
