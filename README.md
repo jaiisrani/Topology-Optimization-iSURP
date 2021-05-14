@@ -26,3 +26,4 @@
 - [Obtaining the Optimal Thickness using Regularization](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/Regularized%20optimal%20thickness)
 
 #### Density-based topology optimization of a Cantilever Beam:
+- [Building the mesh](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/mesh_building)
