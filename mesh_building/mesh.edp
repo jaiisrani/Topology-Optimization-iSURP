@@ -1,0 +1,15 @@
+// density based topology optimization of Cantilever beam
+
+real Lx = 4.0;
+real Ly = 1.0;
+
+// Build mesh
+border a(t=0, Ly){x=0; y=Ly-t; label=1;};
+border b(t=0, Lx){x=t; y=0; label=2;};
+border c(t=0, Ly){x=Lx; y=t; label=3;};
+border d(t=0, Lx){x=Lx-t; y=Ly; label=4;};
+
+int nmeshx = 100;
+int nmeshy = 25;
+mesh Th = buildmesh(a(nmeshy) + b(nmeshx) + c(nmeshy) + d(nmeshx));
+plot(Th);
