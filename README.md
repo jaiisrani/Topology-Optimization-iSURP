@@ -21,6 +21,6 @@
 
 - [Visualizing the Primal problem, i.e. the object to be optimized](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/Primal%20problem)
 
-- [Obtaining the Optimal Thickness without Regularization](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/Regularized%20optimal%20thickness)
+- [Obtaining the Optimal Thickness without Regularization](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/Unregularized%20optimal%20thickness)
 
 - [Obtaining the Optimal Thickness using Regularization](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/Regularized%20optimal%20thickness)
