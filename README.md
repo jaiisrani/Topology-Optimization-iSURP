@@ -29,3 +29,4 @@
 - [Building the mesh](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/mesh_building)
 
 #### Creating Quantum Potentials in an Infinite Well to minimize probability in a certain region (Final Project):
+- [Building the mesh](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/mesh)
