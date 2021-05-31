@@ -1,0 +1,21 @@
+// -----         -----
+//     |         |
+//     |         |
+//     -----------                            
+// x=0 at left bottom of well. x=L at right bottom of well
+
+// For 2 dimensional square well:
+
+
+// Parameters
+real L = 1.0;
+
+// Mesh building
+border a0(t=0.0, L){x=t; y=0; label=1;}
+border a1(t=0.0, L){x=L; y=t; label=2;}
+border a2(t=0.0, L){x=L-t; y=L; label=3;}
+border a3(t=0.0, L){x=0; y=L-t; label=4;}
+
+int nmesh = 50;
+mesh Th = buildmesh(a0(nmesh) + a1(nmesh) + a2(nmesh) + a3(nmesh));
+plot(Th);
