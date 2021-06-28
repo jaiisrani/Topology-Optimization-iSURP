@@ -1,0 +1,65 @@
+// -----      -----
+//     |      |
+//     |      |
+//      ------                            
+// x=0 at left bottom of well. x=L at right bottom of well
+
+// For 2 dimensional square well:
+//      -------
+//     |       |
+//     |       |
+//      -------
+
+// Region to be minimized in square well
+//      -------
+//     |  _    |
+//     | |_|   |
+//      -------
+
+
+// Parameters
+real L = 1.0; // dimensions of the well
+real E = 10*pi*pi; // energy of wavefunction with nx=1 ny=3
+
+// Mesh building
+border a0(t=0.0, L){x=t; y=0;};
+border a1(t=0.0, L){x=L; y=t;};
+border a2(t=0.0, L){x=L-t; y=L;};
+border a3(t=0.0, L){x=0; y=L-t;};
+int nmesh = 50;
+mesh Th = buildmesh(a0(nmesh) + a1(nmesh) + a2(nmesh) + a3(nmesh));
+//// plot(Th);
+
+//// Mesh for the region in which probability is minimized
+//border b0(t=L/5, L/3){x=t; y=L/5;}
+//border b1(t=L/5, L/3){x=L/3; y=t;}
+//border b2(t=L/5, L/3){x=L/3 + L/5 - t; y=L/3;}
+//border b3(t=L/5, L/3){x=L/5; y=L/3 + L/5 - t;}
+//mesh Tho = buildmesh(b0(nmesh) + b1(nmesh) + b2(nmesh) + b3(nmesh));
+
+
+// Make Finite-Element space
+fespace Xh(Th, P2);
+//// Wavefunction s
+Xh s;
+//// Test function w
+Xh w;
+//// Potential V
+real V0 = 0.0;
+Xh V = V0;
+
+
+// Visualizing the initial distribution (Primal problem)
+solve Wavefn(s, w)
+    =  int2d(Th)(
+        dx(s)*dx(w) + dy(s)*dy(w)
+    )
+     - int2d(Th)(
+         (E-V)*s*w
+    )
+    + on(a0, s=0.0001)
+    + on(a1, s=0.0001)
+    + on(a2, s=0.0001)
+    + on(a3, s=0.0001)
+;
+plot(s, fill=true, value=true);
