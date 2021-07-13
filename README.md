@@ -31,6 +31,6 @@
 #### Creating Quantum Potentials in an Infinite Well to minimize probability in a certain region (Final Project):
 - [Building the mesh](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/mesh)
 
-- [Visualising the problem(incomplete)](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/visualizing%20the%20problem)
+- [Visualising the problem](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/visualizing%20the%20problem)
 
 - [Solving the Adjoint problem(incomplete)](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/adjoint%20problem)
