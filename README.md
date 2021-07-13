@@ -33,4 +33,4 @@
 
 - [Visualising the problem(incomplete)](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/visualizing%20the%20problem)
 
--[Solving the Adjoint problem(incomplete)](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/adjoint%20problem)
+- [Solving the Adjoint problem(incomplete)](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/adjoint%20problem)
