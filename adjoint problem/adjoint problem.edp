@@ -1,0 +1,98 @@
+// -----      -----
+//     |      |
+//     |      |
+//      ------                            
+// x=0 at left bottom of well. x=L at right bottom of well
+
+// For 2 dimensional square well:
+//      -------
+//     |       |
+//     |       |
+//      -------
+
+// Region to be minimized in square well
+//      -------
+//     |  _    |
+//     | |_|   |
+//      -------
+
+// Adjoint Problem
+// minimize J(V)=int(Tho)(s*s) 
+// Weak form: int(Tho)(V*grad(p)*grad(q)+2*s*q)=0
+
+// Parameters
+real L = 1.0; // dimensions of the well
+real E = 2*pi*pi; // energy of wavefunction with nx=1 ny=1
+real eta = 0.01; // gradient descent parameter
+real maxiter = 1000; // max number of gradient descent iterations
+
+// Mesh building
+border a0(t=0.0, L){x=t; y=0;};
+border a1(t=0.0, L){x=L; y=t;};
+border a2(t=0.0, L){x=L-t; y=L;};
+border a3(t=0.0, L){x=0; y=L-t;};
+int nmesh = 50;
+mesh Th = buildmesh(a0(nmesh) + a1(nmesh) + a2(nmesh) + a3(nmesh));
+// plot(Th);
+
+// Mesh for the region in which probability is minimized
+border b0(t=L/5, L/3){x=t; y=L/5;}
+border b1(t=L/5, L/3){x=L/3; y=t;}
+border b2(t=L/5, L/3){x=L/3 + L/5 - t; y=L/3;}
+border b3(t=L/5, L/3){x=L/5; y=L/3 + L/5 - t;}
+mesh Tho = buildmesh(b0(nmesh) + b1(nmesh) + b2(nmesh) + b3(nmesh));
+// plot(Tho);
+
+// Make Finite-Element space
+fespace Xh(Th, P2);
+Xh s; //// Wavefunction s
+Xh w; //// Test function w
+real V0 = 0.0; 
+Xh V = V0; //// Potential V
+Xh p; //// Adjoint variable p = (ds/dV)
+Xh q; //// Test adjoint variable q
+
+for(int iter=0; iter<maxiter; iter++){
+
+// Visualizing the initial distribution (Primal problem)
+solve Wavefn(s, w)
+    =  int2d(Th)(
+        dx(s)*dx(w) + dy(s)*dy(w)
+    )
+     - int2d(Th)(
+         (E-V)*s*w
+    )
+    + on(a0, s=0.0001)
+    + on(a1, s=0.0001)
+    + on(a2, s=0.0001)
+    + on(a3, s=0.0001)
+;
+plot(s, wait=false, fill=true, value=true);
+
+//solving adjoint problem
+solve Adjoint(p, q)
+    = int2d(Th)(
+        dx(p)*dx(q) + dy(p)*dy(q)
+    )
+    + 
+    int2d(Th)(
+        s*q
+    )
+    -
+    int2d(Th)(
+        (E-V)*p*q
+    )
+    + on(b0, p=0.0001)
+    + on(b1, p=0.0001)
+    + on(b2, p=0.0001)
+    + on(b3, p=0.0001)
+;
+// plot(p, fill=true, value=true);
+
+// Gradient descent
+Xh dJ = 2*s*p;
+V = V - eta*dJ;
+
+};
+
+plot(s, wait=true, fill=true, value=true);
