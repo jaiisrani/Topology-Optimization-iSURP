@@ -1,5 +1,5 @@
 # Topology Optimization
-## September 2020 - present
+## September 2020 - July 2021
  This repository contains all the programs I will use for my iSURP project on Topology Optimization.
 
 - [Using Finite Difference Method to numerically solve u"(x) + f(x) = 0, where you will have to enter the function f](https://github.com/jai2510/Topology-Optimization-for-Metamaterials-iSURP/blob/master/Finite%20Difference%20Method%20for%20u''(x)%20%2B%20f(x)%20%3D%200.ipynb)
@@ -33,4 +33,4 @@
 
 - [Visualising the problem](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/visualizing%20the%20problem)
 
-- [Solving the Adjoint problem(incomplete)](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/adjoint%20problem)
+- [Solving the Adjoint problem](https://github.com/jaiisrani/Topology-Optimization-iSURP/tree/master/adjoint%20problem)
